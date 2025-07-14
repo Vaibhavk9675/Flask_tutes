@@ -35,16 +35,22 @@ def home():
 def about():
     return render_template("about.html")
 
-@app.route("/contact", methods=['GET', 'POST'])
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        phone = request.form.get('phone')
-        message = request.form.get('message')
-        entry = Contact(name=name, email=email, ph_num=phone, msg=message,date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        db.session.add(entry)
-        db.session.commit()
+    if request.method == "POST":
+        try:
+            entry = Contact(
+                name  = request.form.get("name"),
+                email = request.form.get("email"),
+                ph_num= request.form.get("phone"),
+                msg   = request.form.get("message"),
+                date  = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            )
+            db.session.add(entry)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return f"<h3 style='color:red;'>Error Occurred:</h3><pre>{e}</pre>", 500
 
     return render_template("contact.html")
 
