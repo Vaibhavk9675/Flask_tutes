@@ -6,10 +6,11 @@ import os
 app = Flask(__name__)
 
 # Use environment variables for DB connection
-DB_USER = os.environ.get("DB_USER")
-DB_PASSWORD = os.environ.get("DB_PASSWORD")
-DB_HOST = os.environ.get("DB_HOST")
-DB_NAME = os.environ.get("DB_NAME")
+DB_USER = os.environ.get("MYSQLUSER")
+DB_PASSWORD = os.environ.get("MYSQLPASSWORD")
+DB_HOST = os.environ.get("MYSQLHOST")
+DB_NAME = os.environ.get("MYSQLDATABASE")
+DB_PORT = os.environ.get("MYSQLPORT")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
