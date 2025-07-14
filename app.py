@@ -5,27 +5,32 @@ import os
 
 app = Flask(__name__)
 
-# Use environment variables for DB connection
+# Load DB credentials from Railway environment
 DB_USER = os.environ.get("MYSQLUSER")
 DB_PASSWORD = os.environ.get("MYSQLPASSWORD")
 DB_HOST = os.environ.get("MYSQLHOST")
 DB_NAME = os.environ.get("MYSQLDATABASE")
 DB_PORT = os.environ.get("MYSQLPORT")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+
+# ✅ Define model first
+class Contact(db.Model):
+    id     = db.Column(db.Integer, primary_key=True)
+    name   = db.Column(db.String(80), nullable=False)
+    email  = db.Column(db.String(120), nullable=False)
+    ph_num = db.Column(db.String(15), nullable=False)
+    msg    = db.Column(db.String(500), nullable=False)
+    date   = db.Column(db.String(25))
+
+# ✅ Then call create_all()
 with app.app_context():
     db.create_all()
-
-class Contact(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(20), nullable=False)
-    ph_num = db.Column(db.String(12), nullable=False)
-    msg = db.Column(db.String(200), nullable=False)
-    date = db.Column(db.String(12))
 
 @app.route("/")
 def home():
